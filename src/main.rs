@@ -1,12 +1,13 @@
 mod cli;
 mod clone;
 mod git;
-
+mod repo;
+use color_eyre::eyre::{Error, Result};
 use clap::Parser;
 use cli::Cli;
 use std::env;
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let args = env::args().collect::<Vec<_>>();
 
     match Cli::try_parse_from(args.clone()) {
@@ -17,7 +18,7 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn run(cmd: Cli) -> anyhow::Result<()> {
+fn run(cmd: Cli) -> Result<()> {
     match cmd.command {
         cli::Command::Clone(cmd) => {
             let git_bin = unsafe {
@@ -39,7 +40,7 @@ fn run(cmd: Cli) -> anyhow::Result<()> {
                 //     ❯ nm $(xcrun --find git) | rg '(xcselect|_setup_git_env)'
                 //     00000001001d92d8 T _setup_git_env
                 git::Git::link("/Library/Developer/CommandLineTools/usr/bin/git")
-                    .map_err(anyhow::Error::msg)?
+                    .map_err(Error::msg)?
             };
             clone::run(&cmd, git_bin)
         }
