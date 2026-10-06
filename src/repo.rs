@@ -39,8 +39,10 @@ impl GixRepo {
         }
     }
 
+    // I mean obviously I'm just stubbing this with some stuff rn but since it's a real URL we should be able to
+    // do reasonable things
     fn compute_path_from_url(url: &Url) -> Result<PathBuf> {
-        let segment = url.path_segments()
+        let segment: &str = url.path_segments()
             .ok_or_else(|| anyhow!("failed to compute a url for the repo from: {url}"))?
             .last()
             .ok_or_else(|| anyhow!("failed to compute a url for the repo from: {url}"))?;
